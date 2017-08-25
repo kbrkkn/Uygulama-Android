@@ -1,0 +1,44 @@
+apply plugin: 'base'
+apply plugin: 'com.android.application'
+android {
+    compileSdkVersion 25
+    buildToolsVersion '26.0.0'
+    defaultConfig {
+        applicationId "com.ibm.visual_recognition"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+//unknown pattern X hatasını düzeltmek için
+    allprojects {
+        repositories {
+            maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        } }
+    lintOptions {
+        warning 'InvalidPackage'
+        abortOnError false
+    }
+    productFlavors {
+    }
+}
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.google.android:flexbox:0.2.3'
+    compile 'com.ibm.mobilefirstplatform.clientsdk.android:core:3.0.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    compile 'com.ibm.watson.developer_cloud:visual-recognition:3.8.1-SNAPSHOT' //unknown pattern X hatasını düzeltmek için
+    compile 'com.ibm.watson.developer_cloud:visual-recognition:3.8.0'
+
+}

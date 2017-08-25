@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Uygulama</string>
+    <string name="default_image_descriptor">Selected image for ImageRecognition</string>
+    <string name="camera_button_descriptor">Open Camera Application</string>
+    <string name="gallery_button_descriptor">Open Gallery</string>
+    <string name="alert_dialog_ok">OK</string>
+    <string name="alert_dialog_close">Close Application</string>
+    <string name="error_title_default">Error in Uygulama</string>
+    <string name="error_title_invalid_credentials">Invalid Visual Recognition Credentials</string>
+    <string name="error_message_invalid_credentials">Please verify your credentials in \"values/credentials\" and rebuild the application.\n\nSee the README for further assistance.</string>
+    <string name="error_title_bluemix_connection">Failed to Connect to Bluemix</string>
+    <string name="error_message_bluemix_connection">Please verify your connection to the internet and try again.\n\nSee the README for further assistance.</string>
+</resources>
