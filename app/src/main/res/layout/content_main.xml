@@ -9,7 +9,16 @@
     tools:showIn="@layout/activity_main"
     tools:context="com.ibm.visual_recognition.MainActivity">
 
-
+    <ImageView
+        android:id="@+id/selectedImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/default_image_descriptor"
+        android:scaleType="centerCrop"
+        app:srcCompat="@android:drawable/screen_background_light_transparent" />
 
     <LinearLayout
         android:orientation="horizontal"
