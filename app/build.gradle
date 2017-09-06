@@ -27,8 +27,7 @@ android {
         abortOnError false
     }
     productFlavors {
-    }
-}
+    } }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
@@ -37,8 +36,7 @@ dependencies {
     compile 'com.google.android:flexbox:0.2.3'
     compile 'com.ibm.mobilefirstplatform.clientsdk.android:core:3.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-
-    compile 'com.ibm.watson.developer_cloud:visual-recognition:3.8.1-SNAPSHOT' //unknown pattern X hatasını düzeltmek için
+    compile 'com.ibm.watson.developer_cloud:visual-recognition:3.8.1-SNAPSHOT'
+    //unknown pattern X hatasını düzeltmek için
     compile 'com.ibm.watson.developer_cloud:visual-recognition:3.8.0'
-
 }

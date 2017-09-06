@@ -1,6 +1,8 @@
 package com.ibm.visual_recognition;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,13 @@ import com.ibm.watson.developer_cloud.visual_recognition.v3.model.ImageFace;
 import com.ibm.watson.developer_cloud.visual_recognition.v3.model.VisualClassification;
 import com.ibm.watson.developer_cloud.visual_recognition.v3.model.VisualClassifier;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -23,7 +32,24 @@ import java.util.Locale;
  * Class used to construct a UI to deliver information received from Visual Recognition to the user.
  */
 class RecognitionResultBuilder {
-    public String speechTex="";
+    private String renk,kiyafet;
+
+    public String getRenk() {
+        return renk;
+    }
+
+    public void setRenk(String renk) {
+        this.renk = renk;
+    }
+
+    public String getKiyafet() {
+        return kiyafet;
+    }
+
+    public void setKiyafet(String kiyafet) {
+        this.kiyafet = kiyafet;
+    }
+
     private final MainActivity context;
 
     RecognitionResultBuilder(MainActivity context) {
@@ -53,7 +79,7 @@ class RecognitionResultBuilder {
                 for (VisualClassifier.VisualClass visualClass : visualClasses) {
                     //  String formattedScore = String.format(Locale.US, "%.0f", visualClass.getScore() * 100) + "%";
                     kiyafetler.add(new Model(visualClass.getName(),visualClass.getScore()));
-                    speechTex+=visualClass.getName()+" ";
+                 //   speechTex+=visualClass.getName()+" ";
                     Log.i("kıyafetler",visualClass.getName()+" "+visualClass.getScore());
 
                     //      imageTagContainer.addView(constructImageTag(context.getLayoutInflater(), visualClass.getName(), formattedScore));
@@ -72,8 +98,8 @@ class RecognitionResultBuilder {
                 }
 
             }}
-        imageTagContainer.addView(constructImageTag(context.getLayoutInflater(), secilenKiyafet.getModelName(), secilenKiyafet.getScore()+""));
-        setSpeechTex(speechTex);
+      //  imageTagContainer.addView(constructImageTag(context.getLayoutInflater(), secilenKiyafet.getModelName(), secilenKiyafet.getScore()+""));
+       setKiyafet(secilenKiyafet.getModelName());
         // Next process general classification data from Visual Recognition and create image tags for each visual class.
         List<ImageClassification> classificationsColor = colorClassification.getImages();
         ArrayList<Model>colors=new ArrayList<Model>();
@@ -88,7 +114,6 @@ class RecognitionResultBuilder {
 
                     // String formattedScore = String.format(Locale.US, "%.0f", visualClass.getScore() * 100) + "%";
                     if(visualClass.getName().contains("color")){
-
                         colors.add(new Model(visualClass.getName(),visualClass.getScore()));
                         Log.i("renkler",visualClass.getName()+" "+visualClass.getScore()+" ");
                     }
@@ -107,23 +132,20 @@ class RecognitionResultBuilder {
 
             }
         }
-        imageTagContainer.addView(constructImageTag(context.getLayoutInflater(),selectedModel.getModelName(),selectedModel.getScore()+""));
+    //    imageTagContainer.addView(constructImageTag(context.getLayoutInflater(),selectedModel.getModelName(),selectedModel.getScore()+""));
 
+       String[]colorArr= selectedModel.getModelName().split(" ");
+       setRenk(colorArr[colorArr.length-2]);
         // If parsing through Visual Recognition's return has resulted in no image tags, create an "Unknown" tag.
-        if (imageTagContainer.getChildCount() <= 0) {
+     /*   if (imageTagContainer.getChildCount() <= 0) {
             imageTagContainer.addView(constructImageTag(context.getLayoutInflater(), "Unknown", "N/A"));
         }
-
-        recognitionLayout.addView(imageTagContainer);
+*/
+       // recognitionLayout.addView(imageTagContainer);
 
         return recognitionLayout;
     }
-    public String getSpeechTex(){
-        return speechTex;
-    }
-    public void setSpeechTex(String speechTex){
-        this.speechTex=speechTex;
-    }
+
     /**
      * Creates a TextView image tag with a name and score to be displayed to the user.
      * @param inflater Layout inflater to access R.layout.image_tag.
@@ -153,4 +175,6 @@ class RecognitionResultBuilder {
 
         return imageTagView;
     }
+
+
 }
