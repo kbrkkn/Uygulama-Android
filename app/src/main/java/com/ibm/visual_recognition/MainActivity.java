@@ -18,6 +18,7 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.speech.tts.Voice;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -73,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     private String mSelectedImageUri = null;
     private File output = null;
-     private TextToSpeech mTts;
-private boolean ready=false;
+    private TextToSpeech mTts;
+    private boolean ready=false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -84,9 +85,12 @@ private boolean ready=false;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       Intent checkIntent = new Intent();
+        Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkIntent, 100);
+
+
+        ImageView selectedImageView = (ImageView) findViewById(R.id.selectedImageView);
 
         // Set and create temp storage for camera to utilize when taking a picture
         if (savedInstanceState == null) {
@@ -113,24 +117,29 @@ private boolean ready=false;
                 Uri imageUri = Uri.parse(mSelectedImageUri);
                 Bitmap selectedImage = fetchBitmapFromUri(imageUri);
 
-                ImageView selectedImageView = (ImageView) findViewById(R.id.selectedImageView);
                 selectedImageView.setImageBitmap(selectedImage);
 
             } else {
-                ImageView selectedImageView = (ImageView) findViewById(R.id.selectedImageView);
                 selectedImageView.setImageDrawable(ContextCompat.getDrawable(this, R.mipmap.bend));
             }
         }
 
-        ImageButton cameraButton = (ImageButton) findViewById(R.id.cameraButton);
-        cameraButton.setOnClickListener(new View.OnClickListener() {
+
+       // ImageButton cameraButton = (ImageButton) findViewById(R.id.cameraButton);
+        selectedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {/*
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if(output == null){
                     output=(File)savedInstanceState.getSerializable("com.ibm.visual_recognition.EXTRA_FILENAME");
                 }
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(output));
+              Uri uri = FileProvider.getUriForFile(
+                        MainActivity.this,
+                        getApplicationContext()
+                                .getPackageName() + ".provider", output);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                startActivityForResult(cameraIntent, REQUEST_CAMERA);*/
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, REQUEST_CAMERA);
             }
         });
@@ -221,12 +230,44 @@ private boolean ready=false;
         }
 
         if (resultCode == Activity.RESULT_OK && data != null) {
-            if (requestCode == REQUEST_GALLERY || requestCode == REQUEST_CAMERA) {
+            if(requestCode == REQUEST_CAMERA){
+                ImageView imageView = (ImageView) findViewById(R.id.selectedImageView);
+
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                imageView.setImageBitmap(photo);
+
+                // Resize the Bitmap to constrain within Watson Image Recognition's Size Limit.
+                photo = resizeBitmapForWatson(photo, MAX_IMAGE_DIMENSION);
+
+
+                //ONINIT İ BEKLE.
+                // Send the resized, rotated, bitmap to the Classify Task for Classification.
+                ClassifyTask ct = new ClassifyTask();
+
+
+                synchronized(ct){
+                    while (!ready){
+                        try {
+                            ct.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    ct.notifyAll();
+                    ct.execute(photo);
+
+                }
+            }
+            if (requestCode == REQUEST_GALLERY ) {
                 Uri uri = data.getData();
 
                 // Create uri from temp storage if returned intent could not gather Uri
                 if (uri == null) {
-                    uri = Uri.fromFile(output);
+                  //  uri = Uri.fromFile(output);
+                    uri = FileProvider.getUriForFile(
+                            this,
+                            getApplicationContext()
+                                    .getPackageName() + ".provider", output);
                 }
 
                 mSelectedImageUri = uri.toString();
@@ -255,7 +296,7 @@ private boolean ready=false;
                             e.printStackTrace();
                         }
                     }
-ct.notifyAll();
+                    ct.notifyAll();
                     ct.execute(selectedImage);
 
                 }
@@ -279,7 +320,7 @@ ct.notifyAll();
     @Override
     public void onInit(int status) {
         if(status==TextToSpeech.SUCCESS){
-           ready=true;
+            ready=true;
             mTts.setLanguage(Locale.getDefault());//telefonun dili neyse o
             //  Toast.makeText(this,"başarılı tts",Toast.LENGTH_SHORT).show();
             Log.i("tts","tts success");
@@ -350,7 +391,7 @@ ct.notifyAll();
 
         @Override
         protected ClassifyTaskResult doInBackground(Bitmap... params) {
-         Bitmap createdPhoto = params[0];
+            Bitmap createdPhoto = params[0];
 
             // Reformat Bitmap into a .jpg and save as file to input to Watson.
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -366,7 +407,7 @@ ct.notifyAll();
 
                 //CURL'DE EĞİTTİM CUSTOM CLASSIFIER ID Yİ AŞAĞIYA YAZDIM.
 
-                ClassifyImagesOptions classifyImagesOptions = new ClassifyImagesOptions.Builder().classifierIds("giysiler_483722575").images(tempPhoto).build();
+                ClassifyImagesOptions classifyImagesOptions = new ClassifyImagesOptions.Builder().classifierIds("giysiler_1055484034").images(tempPhoto).build();
 
                 ClassifyImagesOptions colorOptions = new ClassifyImagesOptions.Builder().images(tempPhoto).build();
 
@@ -563,27 +604,27 @@ ct.notifyAll();
             JsonObject jo=new JsonParser().parse(result).getAsJsonObject();
             String renk=jo.get("text").getAsString();
             String kiyafet=resultBuilder.getKiyafet();
-                if(mTts.isSpeaking()){
-                    mTts.stop();
-                    Log.i("tts","konuşuyordu,durduruldu");
+            if(mTts.isSpeaking()){
+                mTts.stop();
+                Log.i("tts","konuşuyordu,durduruldu");
+            }
+            else{
+                Log.i("tts","önce konuşuyor mu : "+mTts.isSpeaking());
+                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+                    Log.i("tts","Lollipop üstü version");
+
+                    mTts.speak(renk+" "+kiyafet, TextToSpeech.QUEUE_ADD, null,null);
+
                 }
                 else{
-                    Log.i("tts","önce konuşuyor mu : "+mTts.isSpeaking());
-if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
-    Log.i("tts","Lollipop üstü version");
+                    Log.i("tts","Lollipop altı version");
 
-    mTts.speak(renk+" "+kiyafet, TextToSpeech.QUEUE_ADD, null,null);
-
-}
-else{
-    Log.i("tts","Lollipop altı version");
-
-    mTts.speak(renk+" "+kiyafet, TextToSpeech.QUEUE_ADD, null);
-
-}
-                    Log.i("tts","sonra konuşuyor mu : "+mTts.isSpeaking());
+                    mTts.speak(renk+" "+kiyafet, TextToSpeech.QUEUE_ADD, null);
 
                 }
+                Log.i("tts","sonra konuşuyor mu : "+mTts.isSpeaking());
+
+            }
 
 
             Log.i("tts","result : "+renk+" "+kiyafet);

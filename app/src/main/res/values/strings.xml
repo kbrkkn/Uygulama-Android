@@ -10,4 +10,5 @@
     <string name="error_message_invalid_credentials">Please verify your credentials in \"values/credentials\" and rebuild the application.\n\nSee the README for further assistance.</string>
     <string name="error_title_bluemix_connection">Failed to Connect to Bluemix</string>
     <string name="error_message_bluemix_connection">Please verify your connection to the internet and try again.\n\nSee the README for further assistance.</string>
+    <string name="title_activity_camera">CameraActivity</string>
 </resources>
