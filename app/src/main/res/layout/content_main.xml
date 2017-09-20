@@ -29,27 +29,6 @@
         android:background="@color/buttonBox"
         style="@style/Widget.AppCompat.ButtonBar.AlertDialog">
 
-        <ImageButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/cameraButton"
-            android:textColor="@color/colorPrimary"
-            android:layout_weight="1"
-            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            app:srcCompat="@android:drawable/ic_menu_camera"
-            android:tint="@color/colorPrimary"
-            android:contentDescription="@string/camera_button_descriptor" />
-
-        <ImageButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/galleryButton"
-            android:textColor="@color/colorPrimary"
-            android:layout_weight="1"
-            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            app:srcCompat="@android:drawable/ic_menu_gallery"
-            android:tint="@color/colorPrimary"
-            android:contentDescription="@string/gallery_button_descriptor" />
     </LinearLayout>
 
     <ProgressBar
