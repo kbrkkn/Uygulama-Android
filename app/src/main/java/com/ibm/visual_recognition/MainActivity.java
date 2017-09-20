@@ -128,17 +128,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
        // ImageButton cameraButton = (ImageButton) findViewById(R.id.cameraButton);
         selectedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {/*
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if(output == null){
-                    output=(File)savedInstanceState.getSerializable("com.ibm.visual_recognition.EXTRA_FILENAME");
-                }
-              Uri uri = FileProvider.getUriForFile(
-                        MainActivity.this,
-                        getApplicationContext()
-                                .getPackageName() + ".provider", output);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(cameraIntent, REQUEST_CAMERA);*/
+            public void onClick(View v) {
+
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, REQUEST_CAMERA);
             }
@@ -407,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
                 //CURL'DE EĞİTTİM CUSTOM CLASSIFIER ID Yİ AŞAĞIYA YAZDIM.
 
-                ClassifyImagesOptions classifyImagesOptions = new ClassifyImagesOptions.Builder().classifierIds("giysiler_1055484034").images(tempPhoto).build();
+                ClassifyImagesOptions classifyImagesOptions = new ClassifyImagesOptions.Builder().classifierIds("giysiler_1890457300").images(tempPhoto).build();
 
                 ClassifyImagesOptions colorOptions = new ClassifyImagesOptions.Builder().images(tempPhoto).build();
 
