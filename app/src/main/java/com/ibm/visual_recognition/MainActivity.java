@@ -135,15 +135,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             }
         });
 
-        ImageButton galleryButton = (ImageButton) findViewById(R.id.galleryButton);
-        galleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("onclick","basıldı");
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, REQUEST_GALLERY);
-            }
-        });
+
 
         // Core SDK must be initialized to interact with Bluemix Mobile services.
         BMSClient.getInstance().initialize(getApplicationContext(), BMSClient.REGION_UK);
