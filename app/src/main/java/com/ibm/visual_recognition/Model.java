@@ -1,6 +1,6 @@
 package com.ibm.visual_recognition;
 
-//Renk ve kıyafet için isim ve yüzdelik skorun alındığı sınıf
+
 public class Model {
     private String modelName;
     private Double score;
